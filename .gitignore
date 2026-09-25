@@ -1,0 +1,33 @@
+# ---- 密钥与本地配置 ----
+.env
+*.env
+!.env.example
+
+# ---- Python ----
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# ---- 数据与产物 ----
+.pgdata/
+.cache/
+uploads/
+*.log
+
+# ---- 前端 ----
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+
+# ---- 编辑器/系统 ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

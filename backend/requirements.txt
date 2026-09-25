@@ -1,0 +1,57 @@
+# 后端依赖(版本为本项目实际验证通过的版本,便于复现)
+# 安装:  .venv/Scripts/python.exe -m pip install -r backend/requirements.txt
+# Python 3.13
+
+# ---------- Web 框架 ----------
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+python-multipart==0.0.32          # 文件上传(multipart/form-data)
+
+# ---------- 数据库:PostgreSQL + pgvector ----------
+SQLAlchemy==2.0.54
+greenlet==3.5.6                   # SQLAlchemy 异步模式依赖
+psycopg[binary]==3.3.6            # binary 版免去本地编译 libpq(Windows 必需)
+pgvector==0.5.0                   # vector 列类型与距离算子
+pgembed==0.2.0                    # 免安装的 PostgreSQL+pgvector,替代 Docker
+psutil==7.2.2                     # 清理 pgembed 残留的进程句柄记录(见 app/db.py)
+
+# ---------- LangChain(核心框架) ----------
+# 代码实际 import 的是下面三个子包(LangChain 1.x 的推荐用法),
+# langchain 作为框架主包一并锁定版本。
+langchain==1.4.2
+langchain-core==1.6.4
+langchain-openai==1.6.3           # 走百炼的 OpenAI 兼容端点;百炼 rerank 无兼容端点,改用 httpx 直连
+langchain-text-splitters==1.1.2
+
+# ---------- 配置与校验 ----------
+pydantic==2.13.5
+pydantic-settings==2.15.0
+python-dotenv==1.2.3
+
+# ---------- 鉴权 ----------
+PyJWT==2.14.0                     # 签发/校验 JWT
+bcrypt==5.0.0                     # 密码哈希
+
+# ---------- 检索 ----------
+jieba==0.42.1                     # 中文分词,供 BM25 稀疏检索
+rank-bm25==0.2.2
+numpy==2.5.3
+tiktoken==0.14.0                  # 统计分块 token 数
+
+# ---------- 缓存 / 限流 ----------
+diskcache==5.6.3                  # 替代 Redis:embedding 缓存、语义缓存、滑动窗口限流
+
+# ---------- 文档解析 ----------
+pypdf==6.19.0
+python-docx==1.2.0
+openpyxl==3.1.5
+# txt / md / csv 用标准库解析,无需额外依赖
+
+# ---------- HTTP 客户端 ----------
+httpx==0.28.1                     # 调百炼原生 rerank 接口
+
+# ---------- 联调测试脚本专用 ----------
+websocket-client==1.9.2           # scripts/browser_check.py 通过 CDP 驱动无头浏览器
+
+# ---------- 单元测试 ----------
+pytest==9.1.1                     # tests/ 下的纯单元测试(不连库、不调云端接口)
