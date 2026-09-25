@@ -178,10 +178,18 @@ async def init_engine() -> str:
     engine = create_async_engine(
         async_url,
         echo=False,
-        pool_size=10,
-        max_overflow=20,
+        pool_size=settings.db_pool_size,
+        max_overflow=settings.db_max_overflow,
+        pool_timeout=settings.db_pool_timeout,
         pool_pre_ping=True,  # 连接池健康检查,避免拿到失效连接
         pool_recycle=1800,
+    )
+    logger.info(
+        "连接池: pool_size=%d max_overflow=%d pool_timeout=%ds(上限 %d 条)",
+        settings.db_pool_size,
+        settings.db_max_overflow,
+        settings.db_pool_timeout,
+        settings.db_pool_size + settings.db_max_overflow,
     )
     SessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 

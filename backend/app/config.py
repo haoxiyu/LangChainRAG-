@@ -38,6 +38,14 @@ class Settings(BaseSettings):
     pgdata_dir: Path = ROOT_DIR / ".pgdata"
     # 业务库名
     db_name: str = "ragdb"
+    # 连接池。压测发现:每个问答请求的 get_session 依赖会贯穿整个流式回答
+    # (几十秒)一直占着连接,检索阶段还会另开稠密/稀疏两个独立会话,
+    # 峰值约 3~5 条/请求 —— 默认 30 条上限在 60 并发左右就会耗尽,
+    # 之后请求排队等 pool_timeout 秒再抛 TimeoutError(表现为 500)。
+    db_pool_size: int = 10
+    db_max_overflow: int = 20
+    # 池满后等连接的超时秒数,超时抛错。默认与 SQLAlchemy 一致
+    db_pool_timeout: int = 30
 
     # ---------- 鉴权 ----------
     secret_key: str = "change-me-in-production"

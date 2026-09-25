@@ -31,7 +31,8 @@ from app.compat import setup_event_loop_policy  # noqa: E402
 from app.db import get_sessionmaker, init_engine  # noqa: E402
 
 # 测试脚本固定用这些前缀注册账号,据此识别残留
-TEST_USER_PATTERNS = ("e2e_user_%", "student%")
+# stress_user_% 来自压测的 prepare_users.py,同样只删账号即可级联清掉其会话
+TEST_USER_PATTERNS = ("e2e_user_%", "student%", "stress_user_%")
 
 
 async def main() -> int:

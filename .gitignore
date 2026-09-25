@@ -19,6 +19,11 @@ __pycache__/
 uploads/
 *.log
 
+# ---- 压测产物 ----
+# stress_users.csv 里是 100 个可直接登录的有效 JWT,绝不能入库
+backend/scripts/stress/stress_users.csv
+backend/scripts/stress/reports/
+
 # ---- 前端 ----
 node_modules/
 dist/
