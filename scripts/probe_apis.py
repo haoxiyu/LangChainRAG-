@@ -2,13 +2,38 @@
 
 用纯 urllib 实现,不依赖任何第三方包,避免 shell 编码问题。
 验证通过后本文件可删除。
+
+密钥从环境变量 DASHSCOPE_API_KEY 或 backend/.env 读取,源码里不出现明文。
 """
 
 import json
+import os
 import urllib.request
 import urllib.error
+from pathlib import Path
 
-API_KEY = "sk-ws-H.PIXRLLI.vXqZ.MEUCIQDhtOgiRuUx6FYIVic4nI6oT76UUaCgwfY6vzHRE6gnIwIgHJyqP73imX4EkwEW2eJI4EdUcwZRwcbfzsIjX9QIq3g"
+
+def _load_api_key() -> str:
+    """取密钥:环境变量优先,其次 backend/.env。
+
+    这个文件曾经把真实 key 硬编码在第 11 行,随 git 推上远端即等于公开泄漏 ——
+    补救只能靠在百炼控制台轮换密钥,删源码是没用的(git 历史里还在)。
+    密钥的唯一归属地是 .env,它被 .gitignore 的 *.env 覆盖,永不入库。
+    """
+    key = os.environ.get("DASHSCOPE_API_KEY", "").strip()
+    if key:
+        return key
+    env_path = Path(__file__).resolve().parents[1] / "backend" / ".env"
+    if env_path.exists():
+        for line in env_path.read_text(encoding="utf-8").splitlines():
+            if line.startswith("DASHSCOPE_API_KEY="):
+                return line.split("=", 1)[1].strip()
+    raise SystemExit(
+        "未找到 DASHSCOPE_API_KEY:请设置同名环境变量,或在 backend/.env 中配置。"
+    )
+
+
+API_KEY = _load_api_key()
 BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 NATIVE = "https://dashscope.aliyuncs.com/api/v1/services"
 
